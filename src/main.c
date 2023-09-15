@@ -4,7 +4,8 @@ int main(void)
 {
 
     /*Notas
-    Lo ideal sería hacer un struct con la información del player, hay que definir las clases y structs.
+
+    Lo ideal sería hacer un struct con la información, hay que definir las clases y structs.
 
     Quitar todos los "magicnumbers" y ponerlos como constantes.
 
