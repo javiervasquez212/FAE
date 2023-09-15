@@ -3,13 +3,22 @@
 int main(void)
 {
 
-    // Lo ideal sería hacer un struct con la información del player, hay que definir las clases y structs.
+    /*Notas
+    Lo ideal sería hacer un struct con la información del player, hay que definir las clases y structs.
+
+    Quitar todos los "magicnumbers" y ponerlos como constantes.
+
+    */
 
     // Crea la ventana (screenWidth y screenHeigth deben ser del tamaño de la imagen del background)
+
     const int screenWidth = 700;
     const int screenHeight = 598;
 
     InitWindow(screenWidth, screenHeight, "El fruto del arbol envenenado");
+
+    // Inicializar el audio
+    InitAudioDevice();
 
     // Agregar textura del jugador
     Texture2D playerTex = LoadTexture("../../FAE/src/img/playerTexture.png");
@@ -17,6 +26,9 @@ int main(void)
     // Agregar imagen del background
     Texture2D backgroundTex = LoadTexture("../../FAE/src/img/background.png");
 
+    // Agregar el sountrack del background
+
+    Sound backgroundSoundtrack = LoadSound("../../FAE/src/soundtracks/backgroundSountrack.wav");
     // Altura del piso
     const int floorHeight = screenHeight - playerTex.height;
 
@@ -30,10 +42,15 @@ int main(void)
     bool isJumping = false;
     float gravity = 1.0f;
 
+    // Ejecuta la musica
+
+    PlaySound(backgroundSoundtrack);
+
     // wait 3 seconds
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+
         // Movimiento del jugador con validación de colisiones, derecha e izquierda
         if (IsKeyDown(KEY_RIGHT) && playerPosition.x + playerTex.width < screenWidth)
             playerPosition.x += playerSpeed;
@@ -73,6 +90,15 @@ int main(void)
 
         EndDrawing();
     }
+
+    // Unloading de las variables
+
+    UnloadTexture(playerTex);
+    UnloadTexture(backgroundTex);
+    UnloadSound(backgroundSoundtrack);
+
+    CloseAudioDevice();
+
     CloseWindow();
 
     // exit
