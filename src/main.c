@@ -5,17 +5,20 @@ int main(void)
 
     // Lo ideal sería hacer un struct con la información del player, hay que definir las clases y structs.
 
-    // create a window
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    // Crea la ventana (screenWidth y screenHeigth deben ser del tamaño de la imagen del background)
+    const int screenWidth = 700;
+    const int screenHeight = 598;
 
     InitWindow(screenWidth, screenHeight, "El fruto del arbol envenenado");
 
-    // Agregar textura
+    // Agregar textura del jugador
     Texture2D playerTex = LoadTexture("../../FAE/src/img/playerTexture.png");
 
+    // Agregar imagen del background
+    Texture2D backgroundTex = LoadTexture("../../FAE/src/img/background.png");
+
     // Altura del piso
-    const int floorHeight = 450 - playerTex.height;
+    const int floorHeight = screenHeight - playerTex.height;
 
     // Posición relativa del jugador, empieza en la esquina inferior izquierda
     Vector2 playerPosition = {playerTex.width, floorHeight};
@@ -62,7 +65,10 @@ int main(void)
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        // Dibujar textura en la ventana con movimiento
+        // Agregar background a la ventana
+        DrawTexture(backgroundTex, 0, 0, WHITE);
+
+        // Dibujar textura en la ventana
         DrawTextureV(playerTex, playerPosition, WHITE);
 
         EndDrawing();
