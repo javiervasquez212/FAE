@@ -1,107 +1,83 @@
 #include "raylib.h"
 
+// Definición de constantes para evitar magicnumbers
+const int screenWidth = 700;
+const int screenHeight = 598;
+const float playerSpeed = 4.0f;
+const float jumpForce = 10.0f;
+const float gravity = 0.5f;
+
 int main(void)
 {
 
-    /*Notas
-
-    Lo ideal sería hacer un struct con la información, hay que definir las clases y structs.
-
-    Quitar todos los "magicnumbers" y ponerlos como constantes.
-
-    */
-
-    // Crea la ventana (screenWidth y screenHeigth deben ser del tamaño de la imagen del background)
-
-    const int screenWidth = 700;
-    const int screenHeight = 598;
-
-    InitWindow(screenWidth, screenHeight, "El fruto del arbol envenenado");
-
-    // Inicializar el audio
+    // Inicialización de la ventana y el audio
+    InitWindow(screenWidth, screenHeight, "El fruto del árbol envenenado");
     InitAudioDevice();
 
-    // Agregar textura del jugador
+    // Se cargan las texturas y el audio
     Texture2D playerTex = LoadTexture("../../FAE/src/img/playerTexture.png");
-
-    // Agregar imagen del background
     Texture2D backgroundTex = LoadTexture("../../FAE/src/img/background.png");
-
-    // Agregar el sountrack del background
-
     Sound backgroundSoundtrack = LoadSound("../../FAE/src/soundtracks/backgroundSountrack.wav");
-    // Altura del piso
+
+    // Constante de la altura del piso, para validar movimiento
     const int floorHeight = screenHeight - playerTex.height;
 
-    // Posición relativa del jugador, empieza en la esquina inferior izquierda
+    // Definimos los vectores, uno para la posición y otro para la velocidad(salto)
     Vector2 playerPosition = {playerTex.width, floorHeight};
+    Vector2 playerVelocity = {0.0f, 0.0f}; // La velocidad comienza en 0
 
-    // Velocidad del jugador
-    const float playerSpeed = 4.0f;
-    // Salto del jugador
-    const int jumpForce = 40.0f;
+    // Variable para validar el salto
     bool isJumping = false;
-    float gravity = 1.0f;
 
-    // Ejecuta la musica
-
+    // Ejecutamos el sonido
     PlaySound(backgroundSoundtrack);
 
-    // wait 3 seconds
     SetTargetFPS(60);
+
     while (!WindowShouldClose())
     {
-
-        // Movimiento del jugador con validación de colisiones, derecha e izquierda
         if (IsKeyDown(KEY_RIGHT) && playerPosition.x + playerTex.width < screenWidth)
             playerPosition.x += playerSpeed;
         if (IsKeyDown(KEY_LEFT) && playerPosition.x > 0)
             playerPosition.x -= playerSpeed;
 
-        // Salto del jugador
+        // Validar si puede saltar
         if (IsKeyDown(KEY_UP) && !isJumping)
         {
-            // Verificar que el jugador esté en el suelo antes de saltar
+            // Validar que caiga en el piso y no se hunda
             if (playerPosition.y >= floorHeight)
             {
-                playerPosition.y -= jumpForce;
+                playerVelocity.y = -jumpForce;
                 isJumping = true;
             }
         }
 
-        // Aplicar gravedad
-        if (playerPosition.y < floorHeight)
+        // Ubicación segun velocidad y posición
+        playerVelocity.y += gravity;
+        playerPosition.x += playerVelocity.x;
+        playerPosition.y += playerVelocity.y;
+
+        // Validar si el jugador ha aterrizado
+        if (playerPosition.y >= floorHeight)
         {
-            playerPosition.y += gravity;
-        }
-        else
-        {
-            // El jugador ha tocado el suelo, restablecer el estado de salto
+            playerPosition.y = floorHeight;
             isJumping = false;
+            playerVelocity.y = 0.0f; // Resetea valores
         }
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
-        // Agregar background a la ventana
         DrawTexture(backgroundTex, 0, 0, WHITE);
-
-        // Dibujar textura en la ventana
         DrawTextureV(playerTex, playerPosition, WHITE);
-
         EndDrawing();
     }
-
-    // Unloading de las variables
 
     UnloadTexture(playerTex);
     UnloadTexture(backgroundTex);
     UnloadSound(backgroundSoundtrack);
 
     CloseAudioDevice();
-
     CloseWindow();
 
-    // exit
     return 0;
 }
