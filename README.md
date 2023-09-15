@@ -3,7 +3,7 @@ El objetivo principal de este proyecto es perfeccionar las habilidades de progra
 Para llevar a cabo este proyecto, se empleará el siguiente conjunto de herramientas y tecnologías:
 
 Framework: Raylib.
-Herramienta de construcción: Bazel.
+Herramienta de construcción: CMake.
 Gestor de paquetes: Conan.
 
 Estas herramientas nos permitirán desarrollar y gestionar eficazmente el proyecto, asegurando un proceso de desarrollo eficiente.
